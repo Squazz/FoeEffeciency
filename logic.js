@@ -3,6 +3,11 @@ const buildings = [
             {forgePoints: 19, currentGoods: 48, previousGoods: 0, unrefinedGoods: 0, coins: 0, supplies: 134800, units: 12, redAttack: 37, redDefence: 0, blueAttack: 44, blueDefence: 0, coinBoost: 0, supplyBoost: 0, chance: 1},
         ]
     },
+    { name: 'Aegean Marinaresort', width: 4, length: 5, needsRoad: false, productions: [ 
+            {forgePoints: 32, currentGoods: 60, previousGoods: 0, unrefinedGoods: 0, coins: 0, supplies: 0, units: 0, redAttack: 0, redDefence: 44, blueAttack: 37, blueDefence: 59, coinBoost: 0, supplyBoost: 0, chance: .75},
+            {forgePoints: 0, currentGoods: 60, previousGoods: 0, unrefinedGoods: 0, coins: 0, supplies: 0, units: 0, redAttack: 0, redDefence: 44, blueAttack: 37, blueDefence: 59, coinBoost: 0, supplyBoost: 0, chance: .25},
+        ]
+    },
 ];
 
 function calculateEfficiency() {

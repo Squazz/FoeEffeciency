@@ -83,17 +83,17 @@ function calculateEfficiency() {
 
         // Calculate efficiency based on total daily production and building area
         const efficiency = (
-            totalProduction.forgePoints / Math.max(1, forgePointsInput) +
-            totalProduction.currentGoods / Math.max(1, currentGoodsInput) +
-            totalProduction.previousGoods / Math.max(1, previousGoodsInput) +
-            totalProduction.unrefinedGoods / Math.max(1, unrefinedGoodsInput) +
-            totalProduction.coins / Math.max(1, coinsInput) +
-            totalProduction.supplies / Math.max(1, suppliesInput) +
-            totalProduction.units / Math.max(1, unitsInput) +
-            totalProduction.redAttack / Math.max(1, redAttackInput) +
-            totalProduction.redDefence / Math.max(1, redDefenceInput) +
-            totalProduction.blueAttack / Math.max(1, blueAttackInput) +
-            totalProduction.blueDefence / Math.max(1, blueDefenceInput)
+            (forgePointsInput !== 0 ? totalProduction.forgePoints / forgePointsInput : 0) +
+            (currentGoodsInput !== 0 ? totalProduction.currentGoods / currentGoodsInput : 0) +
+            (previousGoodsInput !== 0 ? totalProduction.previousGoods / previousGoodsInput : 0) +
+            (unrefinedGoodsInput !== 0 ? totalProduction.unrefinedGoods / unrefinedGoodsInput : 0) +
+            (coinsInput !== 0 ? totalProduction.coins / coinsInput : 0) +
+            (suppliesInput !== 0 ? totalProduction.supplies / suppliesInput : 0) +
+            (unitsInput !== 0 ? totalProduction.units / unitsInput : 0) +
+            (redAttackInput !== 0 ? totalProduction.redAttack / redAttackInput : 0) +
+            (redDefenceInput !== 0 ? totalProduction.redDefence / redDefenceInput : 0) +
+            (blueAttackInput !== 0 ? totalProduction.blueAttack / blueAttackInput : 0) +
+            (blueDefenceInput !== 0 ? totalProduction.blueDefence / blueDefenceInput : 0)
         ) / area;
 
 

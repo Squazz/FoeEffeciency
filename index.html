@@ -7,23 +7,51 @@
 </head>
 <body>
     <h1>Building Efficiency Calculator</h1>
+
+    <h2>Current stats from city</h2>
+    <label for="coinBoost">Coin Boost:</label>
+    <input type="number" id="coinBoost" placeholder="Enter Coin Boost" value="878">
+
+    <br>
+
+    <label for="supplyBoost">Supply Boost:</label>
+    <input type="number" id="supplyBoost" placeholder="Supply Boost" value="835">
+
+    <br>
+
+    <h2>Expected production pr. square</h2>
     <label for="forgePoints">Forge Points:</label>
     <input type="number" id="forgePoints" placeholder="Enter Forge Points" value="1">
 
     <br>
 
-    <label for="goods">Goods:</label>
-    <input type="number" id="goods" placeholder="Enter Goods" value="1">
+    <label for="currentGoods">Current Era Goods:</label>
+    <input type="number" id="currentGoods" placeholder="Enter Goods" value="1">
+
+    <br>
+
+    <label for="previousGoods">Previous Era Goods:</label>
+    <input type="number" id="previousGoods" placeholder="Enter Goods" value="40">
+
+    <br>
+
+    <label for="unrefinedGoods">Unrefined Goods:</label>
+    <input type="number" id="unrefinedGoods" placeholder="Enter Goods" value="9999">
 
     <br>
 
     <label for="coins">Coins:</label>
-    <input type="number" id="coins" placeholder="Enter Coins" value="300">
+    <input type="number" id="coins" placeholder="Enter Coins" value="4300000">
 
     <br>
 
     <label for="supplies">Supplies:</label>
-    <input type="number" id="supplies" placeholder="Enter Supplies" value="400">
+    <input type="number" id="supplies" placeholder="Enter Supplies" value="42200">
+
+    <br>
+
+    <label for="units">Units:</label>
+    <input type="number" id="units" placeholder="Enter Units" value="0.7">
 
     <br>
 
@@ -54,61 +82,64 @@
 
     <script>
         const buildings = [
-            { name: 'Forge', width: 5, length: 5, productions: [ 
-                    {forgePoints: 200, goods: 200, coins: 300, supplies: 400, redAttack: 50, redDefence: 50, blueAttack: 30, blueDefence: 30, chance: 0.5},
-                    {forgePoints: 100, goods: 200, coins: 300, supplies: 400, redAttack: 50, redDefence: 50, blueAttack: 30, blueDefence: 30, chance: 0.2},
-                    {forgePoints: 100, goods: 200, coins: 300, supplies: 400, redAttack: 50, redDefence: 50, blueAttack: 30, blueDefence: 30, chance: 0.3},
+            { name: 'Majestic Winter Wonderland Pyramid', width: 4, length: 4, needsRoad: false, productions: [ 
+                    {forgePoints: 19, currentGoods: 48, previousGoods: 0, unrefinedGoods: 0, coins: 0, supplies: 134800, units: 12, redAttack: 37, redDefence: 0, blueAttack: 44, blueDefence: 0, coinBoost: 0, supplyBoost: 0, chance: 1},
                 ]
             },
-            { name: 'Market', width: 6, length: 6, productions: [ 
-                    {forgePoints: 150, goods: 250, coins: 350, supplies: 450, redAttack: 60, redDefence: 60, blueAttack: 40, blueDefence: 40, chance: 0.4},
-                    {forgePoints: 150, goods: 250, coins: 350, supplies: 450, redAttack: 60, redDefence: 60, blueAttack: 40, blueDefence: 40, chance: 0.3},
-                    {forgePoints: 150, goods: 250, coins: 350, supplies: 450, redAttack: 60, redDefence: 60, blueAttack: 40, blueDefence: 40, chance: 0.3},
-                ]
-            },
-            { name: 'Residence', width: 7, length: 7, productions: [ 
-                    {forgePoints: 200, goods: 300, coins: 400, supplies: 500, redAttack: 70, redDefence: 70, blueAttack: 50, blueDefence: 50, chance: 0.6},
-                    {forgePoints: 200, goods: 300, coins: 400, supplies: 500, redAttack: 70, redDefence: 70, blueAttack: 50, blueDefence: 50, chance: 0.2},
-                    {forgePoints: 200, goods: 300, coins: 400, supplies: 500, redAttack: 70, redDefence: 70, blueAttack: 50, blueDefence: 50, chance: 0.2},
-                ]
-            }
-            // Add more buildings with their dimensions, attributes, and production details as needed
         ];
 
         function calculateEfficiency() {
             // Get user input values
             const forgePointsInput = parseFloat(document.getElementById('forgePoints').value);
-            const goodsInput = parseFloat(document.getElementById('goods').value);
+            const currentGoodsInput = parseFloat(document.getElementById('currentGoods').value);
+            const previousGoodsInput = parseFloat(document.getElementById('previousGoods').value);
+            const unrefinedGoodsInput = parseFloat(document.getElementById('unrefinedGoods').value);
             const coinsInput = parseFloat(document.getElementById('coins').value);
             const suppliesInput = parseFloat(document.getElementById('supplies').value);
+            const unitsInput = parseFloat(document.getElementById('units').value);
             const redAttackInput = parseFloat(document.getElementById('redAttack').value);
             const redDefenceInput = parseFloat(document.getElementById('redDefence').value);
             const blueAttackInput = parseFloat(document.getElementById('blueAttack').value);
             const blueDefenceInput = parseFloat(document.getElementById('blueDefence').value);
+            const coinBoostInput = (parseFloat(document.getElementById('coinBoost').value) / 100) + 1; // + 1 for 100% base
+            const supplyBoostInput = (parseFloat(document.getElementById('supplyBoost').value) / 100) + 1; // + 1 for 100% base
 
             // Calculate efficiency for each building
             const efficiencyResults = buildings.map(building => {
-                const area = building.width * building.length;
+                let area = building.width * building.length;
+
+                // If the building needs a road, add half of the width to the area
+                if (building.needsRoad) {
+                    area += building.width / 2;
+                }
 
                 // Calculate the total daily production for each kind of production based on chances
                 const totalProduction = building.productions.reduce((acc, production) => {
                     acc.forgePoints += production.forgePoints * production.chance;
-                    acc.goods += production.goods * production.chance;
-                    acc.coins += production.coins * production.chance;
-                    acc.supplies += production.supplies * production.chance;
+                    acc.currentGoods += production.currentGoods * production.chance;
+                    acc.previousGoods += production.previousGoods * production.chance;
+                    acc.unrefinedGoods += production.unrefinedGoods * production.chance;
+                    acc.coins += production.coins * production.chance * coinBoostInput * 2; // Times 2 for motivated boost
+                    acc.supplies += production.supplies * production.chance * supplyBoostInput * 2; // Times 2 for motivated boost
+                    acc.units += production.units * production.chance;
                     acc.redAttack += production.redAttack * production.chance;
                     acc.redDefence += production.redDefence * production.chance;
                     acc.blueAttack += production.blueAttack * production.chance;
                     acc.blueDefence += production.blueDefence * production.chance;
+                    acc.coinBoost += production.coinBoost * production.chance;
+                    acc.supplyBoost += production.supplyBoost * production.chance;
                     return acc;
-                }, { forgePoints: 0, goods: 0, coins: 0, supplies: 0, redAttack: 0, redDefence: 0, blueAttack: 0, blueDefence: 0 });
+                }, { forgePoints: 0, currentGoods: 0, previousGoods: 0, unrefinedGoods: 0, coins: 0, supplies: 0, units: 0, redAttack: 0, redDefence: 0, blueAttack: 0, blueDefence: 0, coinBoost: 0, supplyBoost: 0 });
 
                 // Calculate efficiency based on total daily production and building area
                 const efficiency = (
                     totalProduction.forgePoints / forgePointsInput +
-                    totalProduction.goods / goodsInput +
+                    totalProduction.currentGoods / currentGoodsInput +
+                    totalProduction.previousGoods / previousGoodsInput +
+                    totalProduction.unrefinedGoods / unrefinedGoodsInput +
                     totalProduction.coins / coinsInput +
                     totalProduction.supplies / suppliesInput +
+                    totalProduction.units / unitsInput +
                     totalProduction.redAttack / redAttackInput +
                     totalProduction.redDefence / redDefenceInput +
                     totalProduction.blueAttack / blueAttackInput +
@@ -132,10 +163,15 @@
 
             sortedBuildings.forEach(building => {
                 const listItem = document.createElement('li');
-                listItem.innerText = `${building.name}: ${building.efficiency.toFixed(2)}`;
+                
+                // Convert efficiency to percentage with decimals
+                const efficiencyPercentage = (building.efficiency * 100).toFixed(2);
+
+                listItem.innerText = `${building.name}: ${efficiencyPercentage}%`;
                 efficiencyListElement.appendChild(listItem);
             });
         }
+
     </script>
 </body>
 </html>

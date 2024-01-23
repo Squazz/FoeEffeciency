@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Efficiency Calculator</title>
+</head>
+<body>
+    <h1>Building Efficiency Calculator</h1>
+    <label for="forgePoints">Forge Points:</label>
+    <input type="number" id="forgePoints" placeholder="Enter Forge Points" value="1">
+
+    <br>
+
+    <label for="goods">Goods:</label>
+    <input type="number" id="goods" placeholder="Enter Goods" value="1">
+
+    <br>
+
+    <label for="coins">Coins:</label>
+    <input type="number" id="coins" placeholder="Enter Coins" value="300">
+
+    <br>
+
+    <label for="supplies">Supplies:</label>
+    <input type="number" id="supplies" placeholder="Enter Supplies" value="400">
+
+    <br>
+
+    <label for="redAttack">Red Attack:</label>
+    <input type="number" id="redAttack" placeholder="Enter Red Attack" value="6">
+
+    <br>
+
+    <label for="redDefence">Red Defence:</label>
+    <input type="number" id="redDefence" placeholder="Enter Red Defence" value="8">
+
+    <br>
+
+    <label for="blueAttack">Blue Attack:</label>
+    <input type="number" id="blueAttack" placeholder="Enter Blue Attack" value="999">
+
+    <br>
+
+    <label for="blueDefence">Blue Defence:</label>
+    <input type="number" id="blueDefence" placeholder="Enter Blue Defence" value="999">
+
+    <br>
+
+    <button onclick="calculateEfficiency()">Calculate Efficiency</button>
+
+    <h2>Building Efficiency Results:</h2>
+    <ul id="efficiencyList"></ul>
+
+    <script>
+        const buildings = [
+            { name: 'Forge', width: 5, length: 5, productions: [ 
+                    {forgePoints: 200, goods: 200, coins: 300, supplies: 400, redAttack: 50, redDefence: 50, blueAttack: 30, blueDefence: 30, chance: 0.5},
+                    {forgePoints: 100, goods: 200, coins: 300, supplies: 400, redAttack: 50, redDefence: 50, blueAttack: 30, blueDefence: 30, chance: 0.2},
+                    {forgePoints: 100, goods: 200, coins: 300, supplies: 400, redAttack: 50, redDefence: 50, blueAttack: 30, blueDefence: 30, chance: 0.3},
+                ]
+            },
+            { name: 'Market', width: 6, length: 6, productions: [ 
+                    {forgePoints: 150, goods: 250, coins: 350, supplies: 450, redAttack: 60, redDefence: 60, blueAttack: 40, blueDefence: 40, chance: 0.4},
+                    {forgePoints: 150, goods: 250, coins: 350, supplies: 450, redAttack: 60, redDefence: 60, blueAttack: 40, blueDefence: 40, chance: 0.3},
+                    {forgePoints: 150, goods: 250, coins: 350, supplies: 450, redAttack: 60, redDefence: 60, blueAttack: 40, blueDefence: 40, chance: 0.3},
+                ]
+            },
+            { name: 'Residence', width: 7, length: 7, productions: [ 
+                    {forgePoints: 200, goods: 300, coins: 400, supplies: 500, redAttack: 70, redDefence: 70, blueAttack: 50, blueDefence: 50, chance: 0.6},
+                    {forgePoints: 200, goods: 300, coins: 400, supplies: 500, redAttack: 70, redDefence: 70, blueAttack: 50, blueDefence: 50, chance: 0.2},
+                    {forgePoints: 200, goods: 300, coins: 400, supplies: 500, redAttack: 70, redDefence: 70, blueAttack: 50, blueDefence: 50, chance: 0.2},
+                ]
+            }
+            // Add more buildings with their dimensions, attributes, and production details as needed
+        ];
+
+        function calculateEfficiency() {
+            // Get user input values
+            const forgePointsInput = parseFloat(document.getElementById('forgePoints').value);
+            const goodsInput = parseFloat(document.getElementById('goods').value);
+            const coinsInput = parseFloat(document.getElementById('coins').value);
+            const suppliesInput = parseFloat(document.getElementById('supplies').value);
+            const redAttackInput = parseFloat(document.getElementById('redAttack').value);
+            const redDefenceInput = parseFloat(document.getElementById('redDefence').value);
+            const blueAttackInput = parseFloat(document.getElementById('blueAttack').value);
+            const blueDefenceInput = parseFloat(document.getElementById('blueDefence').value);
+
+            // Calculate efficiency for each building
+            const efficiencyResults = buildings.map(building => {
+                const area = building.width * building.length;
+
+                // Calculate the total daily production for each kind of production based on chances
+                const totalProduction = building.productions.reduce((acc, production) => {
+                    acc.forgePoints += production.forgePoints * production.chance;
+                    acc.goods += production.goods * production.chance;
+                    acc.coins += production.coins * production.chance;
+                    acc.supplies += production.supplies * production.chance;
+                    acc.redAttack += production.redAttack * production.chance;
+                    acc.redDefence += production.redDefence * production.chance;
+                    acc.blueAttack += production.blueAttack * production.chance;
+                    acc.blueDefence += production.blueDefence * production.chance;
+                    return acc;
+                }, { forgePoints: 0, goods: 0, coins: 0, supplies: 0, redAttack: 0, redDefence: 0, blueAttack: 0, blueDefence: 0 });
+
+                // Calculate efficiency based on total daily production and building area
+                const efficiency = (
+                    totalProduction.forgePoints / forgePointsInput +
+                    totalProduction.goods / goodsInput +
+                    totalProduction.coins / coinsInput +
+                    totalProduction.supplies / suppliesInput +
+                    totalProduction.redAttack / redAttackInput +
+                    totalProduction.redDefence / redDefenceInput +
+                    totalProduction.blueAttack / blueAttackInput +
+                    totalProduction.blueDefence / blueDefenceInput
+                ) / area;
+
+                return { name: building.name, efficiency };
+            });
+
+            // Sort and display the list of buildings based on efficiency
+            displayEfficiencyList(efficiencyResults);
+        }
+
+        function displayEfficiencyList(efficiencyResults) {
+            // Sort the buildings by efficiency in descending order
+            const sortedBuildings = efficiencyResults.sort((a, b) => b.efficiency - a.efficiency);
+
+            // Display the sorted list
+            const efficiencyListElement = document.getElementById('efficiencyList');
+            efficiencyListElement.innerHTML = ''; // Clear previous results
+
+            sortedBuildings.forEach(building => {
+                const listItem = document.createElement('li');
+                listItem.innerText = `${building.name}: ${building.efficiency.toFixed(2)}`;
+                efficiencyListElement.appendChild(listItem);
+            });
+        }
+    </script>
+</body>
+</html>
